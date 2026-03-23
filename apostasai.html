@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ApostasAI — Apostas Inteligentes com Inteligência Artificial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #00e676;
+    --green-dim: #00c853;
+    --green-dark: #00701a;
+    --green-glow: rgba(0, 230, 118, 0.12);
+    --bg: #060a0e;
+    --bg2: #0c1218;
+    --bg3: #111820;
+    --border: rgba(0,230,118,0.15);
+    --border-dim: rgba(255,255,255,0.06);
+    --text: #e8f0e9;
+    --text-muted: #6b8070;
+    --text-dim: #3d5046;
+    --red: #ff5252;
+    --amber: #ffd740;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRID NOISE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,230,118,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,230,118,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 4vw;
+    background: rgba(6,10,14,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.06em;
+    color: var(--green);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .logo span { color: var(--text); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.6rem;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: #060a0e;
+  }
+
+  .btn-primary:hover {
+    background: #fff;
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover {
+    background: var(--green-glow);
+    border-color: var(--green);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 4vw 6rem;
+    overflow: hidden;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    opacity: 0.18;
+  }
+
+  .orb1 {
+    width: 600px; height: 600px;
+    background: var(--green);
+    top: -200px; left: -200px;
+    animation: drift1 12s ease-in-out infinite;
+  }
+
+  .orb2 {
+    width: 400px; height: 400px;
+    background: #00b4d8;
+    bottom: -100px; right: -100px;
+    animation: drift2 15s ease-in-out infinite;
+  }
+
+  @keyframes drift1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, 40px); }
+  }
+
+  @keyframes drift2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-40px, 60px); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: var(--green-glow);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.5s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    animation: fadeUp 0.8s 0.1s ease both;
+    max-width: 1000px;
+  }
+
+  .hero h1 .accent { color: var(--green); }
+
+  .hero p {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-muted);
+    max-width: 560px;
+    margin: 2rem auto;
+    font-weight: 300;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-cta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 4rem;
+    margin-top: 6rem;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 0.04em;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .hero-stat .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* ─── TICKER ─── */
+  .ticker-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--border-dim);
+    border-bottom: 1px solid var(--border-dim);
+    padding: 0.8rem 0;
+    background: var(--bg2);
+    position: relative;
+    z-index: 1;
+  }
+
+  .ticker {
+    display: flex;
+    gap: 3rem;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .ticker-item .win { color: var(--green); }
+  .ticker-item .loss { color: var(--red); }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ─── SECTIONS ─── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 7rem 4vw;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    max-width: 700px;
+  }
+
+  .section-sub {
+    color: var(--text-muted);
+    max-width: 520px;
+    margin-top: 1.2rem;
+    font-weight: 300;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* ─── AI SECTION ─── */
+  .ai-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border-dim);
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .ai-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    margin-top: 4rem;
+  }
+
+  .ai-visual {
+    position: relative;
+    height: 420px;
+  }
+
+  .ai-card {
+    position: absolute;
+    background: var(--bg3);
+    border: 1px solid var(--border-dim);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .ai-card.main-card {
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    border-color: var(--border);
+  }
+
+  .ai-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .ai-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--green-glow);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .ai-card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--green);
+    letter-spacing: 0.06em;
+  }
+
+  .ai-card-status {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border-dim);
+    font-size: 0.82rem;
+  }
+
+  .data-row:last-child { border-bottom: none; }
+
+  .data-label { color: var(--text-muted); }
+
+  .data-value {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .data-value.pos { color: var(--green); }
+  .data-value.neg { color: var(--red); }
+
+  .confidence-bar {
+    margin-top: 0.3rem;
+    height: 3px;
+    background: var(--border-dim);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 1.5s ease;
+  }
+
+  /* floating mini card */
+  .float-card {
+    position: absolute;
+    bottom: -20px;
+    right: -30px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    width: 180px;
+    animation: float 4s ease-in-out infinite;
+    box-shadow: 0 0 30px var(--green-glow);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .float-label { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .float-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--green); line-height: 1.1; }
+  .float-sub { font-size: 0.7rem; color: var(--text-muted); }
+
+  .ai-features { display: flex; flex-direction: column; gap: 2.5rem; }
+
+  .ai-feature {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+
+  .feat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--text-dim);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 2.5rem;
+    text-align: right;
+  }
+
+  .feat-content {}
+
+  .feat-title {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .feat-text { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* ─── HOW IT WORKS ─── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .step {
+    background: var(--bg2);
+    border: 1px solid var(--border-dim);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .step:hover {
+    border-color: var(--border);
+    transform: translateY(-4px);
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: var(--text-dim);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .step-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.6rem;
+    color: var(--text);
+  }
+
+  .step-text { font-size: 0.83rem; color: var(--text-muted); line-height: 1.65; }
+
+  .step-icon {
+    position: absolute;
+    top: 1.5rem; right: 1.5rem;
+    font-size: 1.4rem;
+    opacity: 0.5;
+  }
+
+  /* ─── SPORTS ─── */
+  .sports-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+  }
+
+  .sport-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.2rem;
+    border: 1px solid var(--border-dim);
+    border-radius: 100px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    background: var(--bg2);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .sport-chip:hover {
+    border-color: var(--border);
+    color: var(--text);
+    background: var(--green-glow);
+  }
+
+  /* ─── PNL ─── */
+  .pnl-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border-dim);
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .pnl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    margin-top: 4rem;
+  }
+
+  .pnl-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .pnl-card {
+    background: var(--bg3);
+    border: 1px solid var(--border-dim);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+
+  .pnl-card .pnl-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .pnl-card .pnl-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  .pnl-card .pnl-num.green { color: var(--green); }
+  .pnl-card .pnl-num.red { color: var(--red); }
+
+  .pnl-card .pnl-delta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 280px;
+  }
+
+  canvas { width: 100%; height: 100%; }
+
+  /* ─── PICKS PREVIEW ─── */
+  .pick-card {
+    background: var(--bg3);
+    border: 1px solid var(--border-dim);
+    border-radius: 12px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .pick-card:hover { border-color: var(--border); }
+
+  .pick-sport {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: var(--bg2);
+    border: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .pick-info { flex: 1; }
+
+  .pick-match {
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .pick-detail {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .pick-right { text-align: right; }
+
+  .pick-odd {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .pick-conf {
+    font-size: 0.72rem;
+    color: var(--green);
+    margin-top: 0.15rem;
+  }
+
+  .pick-badge {
+    padding: 0.25rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .badge-free { background: rgba(255,215,64,0.1); color: var(--amber); border: 1px solid rgba(255,215,64,0.2); }
+  .badge-pro { background: var(--green-glow); color: var(--green); border: 1px solid var(--border); }
+  .badge-locked { background: rgba(255,255,255,0.04); color: var(--text-dim); border: 1px solid var(--border-dim); }
+
+  /* ─── PLANS ─── */
+  .plans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 4rem auto 0;
+  }
+
+  .plan {
+    background: var(--bg2);
+    border: 1px solid var(--border-dim);
+    border-radius: 16px;
+    padding: 2.5rem;
+    position: relative;
+    transition: transform 0.3s;
+  }
+
+  .plan:hover { transform: translateY(-4px); }
+
+  .plan.featured {
+    border-color: var(--border);
+    background: linear-gradient(135deg, var(--bg2) 0%, rgba(0,230,118,0.04) 100%);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--green);
+    color: #060a0e;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.9rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+  }
+
+  .plan-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    margin-bottom: 2rem;
+  }
+
+  .plan-price .currency {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .plan-price .amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .plan-price .period {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .plan-features li .check { color: var(--green); font-size: 0.9rem; }
+  .plan-features li .cross { color: var(--text-dim); }
+  .plan-features li.active { color: var(--text); }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 4vw;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,230,118,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 6rem);
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-section p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 460px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 440px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .email-form input {
+    flex: 1;
+    min-width: 240px;
+    padding: 0.75rem 1.2rem;
+    background: var(--bg2);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .email-form input:focus { border-color: var(--border); }
+  .email-form input::placeholder { color: var(--text-dim); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 3rem 4vw;
+    border-top: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  footer p {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--text-muted); }
+
+  .disclaimer {
+    background: rgba(255,82,82,0.05);
+    border: 1px solid rgba(255,82,82,0.15);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    max-width: 900px;
+    margin: 0 auto;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: var(--border-dim);
+    margin: 0 4vw;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .ai-grid, .pnl-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .plans { grid-template-columns: 1fr; max-width: 400px; }
+    .hero-stats { gap: 2rem; flex-wrap: wrap; justify-content: center; }
+    nav .nav-links { display: none; }
+    .float-card { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .steps { grid-template-columns: 1fr; }
+    .pnl-stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#"><span>Apostas</span>AI</a>
+  <ul class="nav-links">
+    <li><a href="#ia">A Tecnologia</a></li>
+    <li><a href="#como-funciona">Como Funciona</a></li>
+    <li><a href="#picks">Picks</a></li>
+    <li><a href="#planos">Planos</a></li>
+  </ul>
+  <a href="#planos" class="btn btn-primary">Começar Agora</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+
+  <div class="hero-badge">
+    <span class="pulse-dot"></span>
+    Bot Activo — Analisando Jogos em Tempo Real
+  </div>
+
+  <h1>APOSTAS<br><span class="accent">INTELIGENTES</span><br>COM IA</h1>
+
+  <p>O nosso bot analisa milhões de dados desportivos e gera as melhores apostas com base em inteligência artificial avançada.</p>
+
+  <div class="hero-cta">
+    <a href="#planos" class="btn btn-primary">Entrar no Grupo Grátis</a>
+    <a href="#ia" class="btn btn-outline">Ver a Tecnologia</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="num" data-count="78">0%</div>
+      <div class="label">Taxa de Acerto</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num" data-count="340">0+</div>
+      <div class="label">Picks Este Mês</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num" data-count="18">+0%</div>
+      <div class="label">ROI Médio</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num" data-count="12">0</div>
+      <div class="label">Desportos Cobertos</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span class="ticker-item"><span class="win">✓</span> Benfica vs Porto — Over 2.5 @ 1.85 <span class="win">+1.85u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Man City ML @ 1.65 <span class="win">+1.65u</span></span>
+    <span class="ticker-item"><span class="loss">✗</span> Real Madrid AH -1.5 @ 2.10 <span class="loss">-1.00u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Federer/Djokovic O22.5 games @ 1.90 <span class="win">+1.90u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> NBA — Lakers vs Celtics BTTS <span class="win">+1.75u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Sporting CP — Ambas Marcam @ 1.72 <span class="win">+1.72u</span></span>
+    <span class="ticker-item"><span class="loss">✗</span> F1 — Verstappen Pole @ 2.50 <span class="loss">-1.00u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Liverpool vs Chelsea U3.5 @ 1.68 <span class="win">+1.68u</span></span>
+    <!-- duplicado para loop infinito -->
+    <span class="ticker-item"><span class="win">✓</span> Benfica vs Porto — Over 2.5 @ 1.85 <span class="win">+1.85u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Man City ML @ 1.65 <span class="win">+1.65u</span></span>
+    <span class="ticker-item"><span class="loss">✗</span> Real Madrid AH -1.5 @ 2.10 <span class="loss">-1.00u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Federer/Djokovic O22.5 games @ 1.90 <span class="win">+1.90u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> NBA — Lakers vs Celtics BTTS <span class="win">+1.75u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Sporting CP — Ambas Marcam @ 1.72 <span class="win">+1.72u</span></span>
+    <span class="ticker-item"><span class="loss">✗</span> F1 — Verstappen Pole @ 2.50 <span class="loss">-1.00u</span></span>
+    <span class="ticker-item"><span class="win">✓</span> Liverpool vs Chelsea U3.5 @ 1.68 <span class="win">+1.68u</span></span>
+  </div>
+</div>
+
+<!-- AI SECTION -->
+<section class="ai-section" id="ia">
+  <div class="container">
+    <div class="section-label">A Tecnologia</div>
+    <h2 class="section-title reveal">INTELIGÊNCIA ARTIFICIAL AO SERVIÇO DAS APOSTAS</h2>
+    <p class="section-sub reveal">Desenvolvemos um bot proprietário que recolhe, processa e analisa dados desportivos de todo o mundo para identificar as melhores oportunidades.</p>
+
+    <div class="ai-grid">
+      <!-- Visual -->
+      <div class="ai-visual reveal">
+        <div class="ai-card main-card">
+          <div class="ai-card-header">
+            <div class="ai-icon">🤖</div>
+            <div>
+              <div class="ai-card-title">ApostasAI — Motor de Análise</div>
+              <div class="ai-card-status">● Activo — Última análise: há 2 min</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="data-row">
+              <span class="data-label">Jogo Analisado</span>
+              <span class="data-value">Benfica vs Sporting</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Mercado</span>
+              <span class="data-value">Over 2.5 Golos</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Odd Actual</span>
+              <span class="data-value">1.85</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Probabilidade Real (IA)</span>
+              <span class="data-value pos">67.4%</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Edge</span>
+              <span class="data-value pos">+8.3%</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Stake Sugerida</span>
+              <span class="data-value">2 Unidades</span>
+            </div>
+          </div>
+
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.72rem; color: var(--text-muted); margin-bottom:0.4rem;">
+              <span>Confiança da IA</span>
+              <span style="color: var(--green); font-family: 'DM Mono', monospace;">82%</span>
+            </div>
+            <div class="confidence-bar">
+              <div class="confidence-fill" id="conf-fill" style="width: 82%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="float-card">
+          <div class="float-label">ROI Mensal</div>
+          <div class="float-value">+18.4%</div>
+          <div class="float-sub">Março 2026</div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="ai-features">
+        <div class="ai-feature reveal">
+          <div class="feat-num">01</div>
+          <div class="feat-content">
+            <div class="feat-title">Recolha Massiva de Dados</div>
+            <p class="feat-text">O bot faz scraping automático de estatísticas, forma recente, lesões, head-to-head e odds de mercado de mais de 50 fontes em tempo real — futebol, basquete, ténis, F1 e muito mais.</p>
+          </div>
+        </div>
+        <div class="ai-feature reveal">
+          <div class="feat-num">02</div>
+          <div class="feat-content">
+            <div class="feat-title">Modelo Preditivo com IA</div>
+            <p class="feat-text">Os dados são processados por modelos de machine learning treinados em anos de resultados históricos. O motor calcula a probabilidade real de cada resultado e compara com as odds do mercado.</p>
+          </div>
+        </div>
+        <div class="ai-feature reveal">
+          <div class="feat-num">03</div>
+          <div class="feat-content">
+            <div class="feat-title">Identificação de Value Bets</div>
+            <p class="feat-text">Só publicamos apostas onde a IA detecta um edge positivo — ou seja, quando a nossa probabilidade calculada é superior à probabilidade implícita nas odds. Isso é o único caminho sustentável para lucro a longo prazo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="como-funciona">
+  <div class="container">
+    <div class="section-label">Processo</div>
+    <h2 class="section-title reveal">COMO O BOT FUNCIONA</h2>
+    <p class="section-sub reveal">Da recolha de dados à aposta — tudo automatizado e transparente.</p>
+
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-icon">📡</div>
+        <div class="step-num">01</div>
+        <div class="step-title">Recolha de Dados</div>
+        <p class="step-text">O bot monitoriza em tempo real estatísticas, lesões, meteorologia, odds e dezenas de outras variáveis para cada jogo.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-icon">⚙️</div>
+        <div class="step-num">02</div>
+        <div class="step-title">Processamento</div>
+        <p class="step-text">Os dados são normalizados e introduzidos nos modelos de IA que foram treinados com histórico de mais de 10 anos de resultados.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-icon">🎯</div>
+        <div class="step-num">03</div>
+        <div class="step-title">Detecção de Valor</div>
+        <p class="step-text">Apenas apostas com edge positivo e nível de confiança acima de 65% passam para publicação. A qualidade fica acima da quantidade.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-icon">📲</div>
+        <div class="step-num">04</div>
+        <div class="step-title">Pick Publicado</div>
+        <p class="step-text">O pick chega ao teu Telegram com jogo, mercado, odd, stake sugerida e análise detalhada em tempo real.</p>
+      </div>
+    </div>
+
+    <!-- Desportos -->
+    <div style="margin-top: 5rem;">
+      <div class="section-label reveal">Desportos Cobertos</div>
+      <div class="sports-grid">
+        <div class="sport-chip reveal">⚽ Futebol</div>
+        <div class="sport-chip reveal">🏀 Basquetebol</div>
+        <div class="sport-chip reveal">🎾 Ténis</div>
+        <div class="sport-chip reveal">🏈 NFL</div>
+        <div class="sport-chip reveal">🏒 Hóquei no Gelo</div>
+        <div class="sport-chip reveal">⚾ Beisebol</div>
+        <div class="sport-chip reveal">🏎 Fórmula 1</div>
+        <div class="sport-chip reveal">🥊 MMA / UFC</div>
+        <div class="sport-chip reveal">🏉 Rugby</div>
+        <div class="sport-chip reveal">🎱 Snooker</div>
+        <div class="sport-chip reveal">🏐 Voleibol</div>
+        <div class="sport-chip reveal">🏊 Mais em breve...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PNL + PICKS -->
+<section class="pnl-section" id="picks">
+  <div class="container">
+    <div class="pnl-grid">
+      <!-- Stats -->
+      <div>
+        <div class="section-label">Histórico</div>
+        <h2 class="section-title reveal">RESULTADOS<br>TRANSPARENTES</h2>
+        <p class="section-sub reveal">Publicamos o nosso track record completo todos os meses. Sem esconder perdas, sem bater bolas.</p>
+
+        <div class="pnl-stats" style="margin-top: 2.5rem;">
+          <div class="pnl-card reveal">
+            <div class="pnl-label">Unidades Março</div>
+            <div class="pnl-num green">+12.4u</div>
+            <div class="pnl-delta">↑ vs Fevereiro +9.1u</div>
+          </div>
+          <div class="pnl-card reveal">
+            <div class="pnl-label">ROI Março</div>
+            <div class="pnl-num green">+18.4%</div>
+            <div class="pnl-delta">↑ Acima da média</div>
+          </div>
+          <div class="pnl-card reveal">
+            <div class="pnl-label">Win Rate</div>
+            <div class="pnl-num">78%</div>
+            <div class="pnl-delta">W:18 / L:5 / V:1</div>
+          </div>
+          <div class="pnl-card reveal">
+            <div class="pnl-label">Picks Totais</div>
+            <div class="pnl-num">24</div>
+            <div class="pnl-delta">Este mês</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem;" class="reveal">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:0.5rem;">
+            <span>Evolução de Unidades — Março 2026</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="pnlChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Picks Preview -->
+      <div>
+        <div class="section-label" style="margin-bottom:1.5rem;">Picks Recentes</div>
+
+        <div class="pick-card reveal">
+          <div class="pick-sport">⚽</div>
+          <div class="pick-info">
+            <div class="pick-match">Benfica vs Sporting</div>
+            <div class="pick-detail">Primeira Liga · Over 2.5 Golos</div>
+          </div>
+          <div class="pick-right">
+            <div class="pick-odd">@ 1.85</div>
+            <div class="pick-conf">IA 82% confiança</div>
+          </div>
+          <span class="pick-badge badge-free">FREE</span>
+        </div>
+
+        <div class="pick-card reveal">
+          <div class="pick-sport">🏀</div>
+          <div class="pick-info">
+            <div class="pick-match">Lakers vs Celtics</div>
+            <div class="pick-detail">NBA · Ambas as Equipas Marcam</div>
+          </div>
+          <div class="pick-right">
+            <div class="pick-odd">@ 1.72</div>
+            <div class="pick-conf">IA 76% confiança</div>
+          </div>
+          <span class="pick-badge badge-pro">PRO</span>
+        </div>
+
+        <div class="pick-card reveal">
+          <div class="pick-sport">🎾</div>
+          <div class="pick-info">
+            <div class="pick-match">Sinner vs Alcaraz</div>
+            <div class="pick-detail">Roland Garros · +22.5 Games</div>
+          </div>
+          <div class="pick-right">
+            <div class="pick-odd">@ 1.90</div>
+            <div class="pick-conf">IA 79% confiança</div>
+          </div>
+          <span class="pick-badge badge-pro">PRO</span>
+        </div>
+
+        <div class="pick-card reveal" style="filter: blur(4px); pointer-events:none; user-select:none;">
+          <div class="pick-sport">⚽</div>
+          <div class="pick-info">
+            <div class="pick-match">Manchester City vs Chelsea</div>
+            <div class="pick-detail">Premier League · Handicap -1</div>
+          </div>
+          <div class="pick-right">
+            <div class="pick-odd">@ 2.10</div>
+            <div class="pick-conf">IA 71% confiança</div>
+          </div>
+          <span class="pick-badge badge-locked">🔒 PRO</span>
+        </div>
+
+        <div class="pick-card reveal" style="filter: blur(4px); pointer-events:none; user-select:none;">
+          <div class="pick-sport">🏎</div>
+          <div class="pick-info">
+            <div class="pick-match">GP Bahrain 2026</div>
+            <div class="pick-detail">Fórmula 1 · Verstappen Top 3</div>
+          </div>
+          <div class="pick-right">
+            <div class="pick-odd">@ 1.55</div>
+            <div class="pick-conf">IA 88% confiança</div>
+          </div>
+          <span class="pick-badge badge-locked">🔒 PRO</span>
+        </div>
+
+        <div style="text-align:center; margin-top:1.5rem;" class="reveal">
+          <a href="#planos" class="btn btn-outline">Desbloquear Todos os Picks →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANOS -->
+<section id="planos">
+  <div class="container" style="text-align:center;">
+    <div class="section-label">Planos</div>
+    <h2 class="section-title reveal" style="margin: 0 auto;">ESCOLHE O TEU<br>PLANO</h2>
+    <p class="section-sub reveal" style="margin: 1rem auto 0;">Começa grátis e faz upgrade quando estiveres pronto.</p>
+
+    <div class="plans">
+      <!-- Free -->
+      <div class="plan reveal">
+        <div class="plan-name">Free</div>
+        <p class="plan-desc">Para quem quer testar a qualidade das nossas picks antes de comprometer.</p>
+        <div class="plan-price">
+          <span class="currency">€</span>
+          <span class="amount">0</span>
+          <span class="period">/ mês</span>
+        </div>
+        <ul class="plan-features">
+          <li class="active"><span class="check">✓</span> 1 pick grátis por dia</li>
+          <li class="active"><span class="check">✓</span> Acesso ao canal Telegram público</li>
+          <li class="active"><span class="check">✓</span> PnL mensal público</li>
+          <li><span class="cross">✗</span> Análise detalhada da IA</li>
+          <li><span class="cross">✗</span> Picks premium (3–8/dia)</li>
+          <li><span class="cross">✗</span> Alertas em tempo real</li>
+          <li><span class="cross">✗</span> Acesso ao grupo privado</li>
+        </ul>
+        <a href="#" class="btn btn-outline" style="width:100%; justify-content:center;">Entrar Grátis</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan featured reveal">
+        <div class="plan-badge">Mais Popular</div>
+        <div class="plan-name" style="color: var(--green);">Pro</div>
+        <p class="plan-desc">Acesso completo a todos os picks, análises e ao grupo privado no Telegram.</p>
+        <div class="plan-price">
+          <span class="currency">€</span>
+          <span class="amount">29</span>
+          <span class="period">/ mês</span>
+        </div>
+        <ul class="plan-features">
+          <li class="active"><span class="check">✓</span> Todos os picks (3–8 por dia)</li>
+          <li class="active"><span class="check">✓</span> Análise completa da IA por pick</li>
+          <li class="active"><span class="check">✓</span> Alertas em tempo real no Telegram</li>
+          <li class="active"><span class="check">✓</span> Grupo privado exclusivo</li>
+          <li class="active"><span class="check">✓</span> PnL detalhado + histórico completo</li>
+          <li class="active"><span class="check">✓</span> Bot /pnl — consulta qualquer altura</li>
+          <li class="active"><span class="check">✓</span> Suporte prioritário</li>
+        </ul>
+        <a href="#" class="btn btn-primary" style="width:100%; justify-content:center;">Subscrever Pro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <p class="section-label" style="letter-spacing:0.2em;">Junta-te a Nós</p>
+  <h2>COMEÇA A APOSTAR<br><span style="color: var(--green);">COM INTELIGÊNCIA</span></h2>
+  <p>Entra no canal gratuito e recebe o pick de hoje sem qualquer compromisso.</p>
+
+  <div class="email-form">
+    <input type="email" placeholder="O teu email..." />
+    <button class="btn btn-primary" onclick="handleSubmit(this)">Entrar Grátis</button>
+  </div>
+
+  <p style="font-size:0.75rem; color: var(--text-dim); margin-top:1rem;">Sem spam. Cancelas quando quiseres.</p>
+</section>
+
+<!-- DISCLAIMER -->
+<div style="padding: 0 4vw 3rem; position: relative; z-index: 1;">
+  <div class="disclaimer">
+    ⚠️ <strong>Aviso Legal:</strong> As apostas desportivas envolvem risco de perda de capital. As picks publicadas pela ApostasAI são baseadas em análise de dados e não constituem garantia de lucro. Aposta de forma responsável. Proibido a menores de 18 anos. Em Portugal, o jogo é regulado pelo SRIJ. Se o jogo se tornar um problema, contacta o <strong>Jogo Responsável</strong> ou a linha de apoio 1400 (gratuita, disponível 24h).
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a class="logo" href="#" style="font-size:1.4rem;"><span>Apostas</span>AI</a>
+  <p>© 2026 ApostasAI. Todos os direitos reservados.</p>
+  <ul class="footer-links">
+    <li><a href="#">Termos</a></li>
+    <li><a href="#">Privacidade</a></li>
+    <li><a href="#">Telegram</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+</footer>
+
+<!-- CHART.JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+  // PnL Chart
+  const ctx = document.getElementById('pnlChart').getContext('2d');
+  const days = Array.from({length: 24}, (_, i) => i + 1);
+  const pnl = [0, 1.85, 0.85, 2.55, 1.55, 3.25, 2.25, 4.10, 3.10, 4.80, 5.80, 4.80, 6.50, 7.35, 6.35, 8.05, 9.05, 8.05, 9.75, 10.75, 9.75, 11.45, 12.45, 12.45];
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days.map(d => d + ' Mar'),
+      datasets: [{
+        data: pnl,
+        borderColor: '#00e676',
+        borderWidth: 2,
+        fill: true,
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const {ctx: c, chartArea} = chart;
+          if (!chartArea) return 'transparent';
+          const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradient.addColorStop(0, 'rgba(0,230,118,0.2)');
+          gradient.addColorStop(1, 'rgba(0,230,118,0)');
+          return gradient;
+        },
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointHoverBackgroundColor: '#00e676',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        backgroundColor: '#111820',
+        borderColor: 'rgba(0,230,118,0.3)',
+        borderWidth: 1,
+        titleColor: '#6b8070',
+        bodyColor: '#00e676',
+        bodyFont: { family: 'DM Mono', size: 13 },
+        callbacks: { label: ctx => ' +' + ctx.parsed.y.toFixed(2) + 'u' }
+      }},
+      scales: {
+        x: { display: false },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+          ticks: { color: '#3d5046', font: { family: 'DM Mono', size: 11 }, callback: v => v + 'u' },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  // Counter animation
+  function animateCounters() {
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count);
+      const suffix = el.textContent.includes('%') ? '%' : el.textContent.includes('+') ? '+' : '';
+      const prefix = el.textContent.startsWith('+') ? '+' : '';
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        el.textContent = prefix + Math.floor(current) + suffix;
+      }, 16);
+    });
+  }
+
+  // Scroll reveal
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Counter trigger on hero visibility
+  const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { animateCounters(); heroObserver.disconnect(); }});
+  }, { threshold: 0.3 });
+
+  heroObserver.observe(document.querySelector('.hero'));
+
+  // Email form
+  function handleSubmit(btn) {
+    const input = btn.previousElementSibling;
+    if (input.value && input.value.includes('@')) {
+      btn.textContent = '✓ Enviado!';
+      btn.style.background = 'var(--green)';
+      input.value = '';
+      setTimeout(() => { btn.textContent = 'Entrar Grátis'; btn.style.background = ''; }, 3000);
+    } else {
+      input.style.borderColor = 'var(--red)';
+      setTimeout(() => { input.style.borderColor = ''; }, 2000);
+    }
+  }
+</script>
+</body>
+</html>
